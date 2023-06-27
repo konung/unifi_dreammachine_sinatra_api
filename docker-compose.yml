@@ -11,8 +11,6 @@ services:
       - PASSWORD='pass'
       - SITE_NAME='site_name'
       - BASE_URL='https://192.168.1.1:443'
-      - BASE_LOGIN_URL= BASE_URL + '/api/auth/login'
-      - BASE_API_URL= BASE_URL + '/proxy/network/'
       - API_TOKEN=SOME_TOKEN
 
 
