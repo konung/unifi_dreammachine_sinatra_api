@@ -8,3 +8,5 @@ gem 'logger'
 
 gem "rubocop", "~> 1.53", :group => :development
 gem "reek", "~> 6.1", :group => :development
+
+gem "puma", "~> 6.3"
