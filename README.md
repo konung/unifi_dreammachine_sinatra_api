@@ -1,10 +1,10 @@
 # UniFi DreamMachine Sinatra API
 
-This project comprises a Dockerized Sinatra application that serves as a proxy for the UniFi DreamMachine API. The primary function of this application is to allow simple toggling of traffic rules on a UniFi network. 
+This project comprises a Dockerized Sinatra application that serves as a proxy for the UniFi DreamMachine API. The primary function of this application is to allow simple toggling of traffic rules on a UniFi network.
 
 ## Use Case
 
-This Sinatra application is designed for environments where frequent toggling of internet access rules is needed, such as in a home with children who have restrictions on their internet usage. 
+This Sinatra application is designed for environments where frequent toggling of internet access rules is needed, such as in a home with children who have restrictions on their internet usage.
 
 Imagine you want to limit your children's internet access to only certain educational websites until their homework is completed. Once they finish their assignments, you can easily enable broader internet access with a simple button click. This is particularly useful for individuals who are not technically inclined or those who do not require full administrative access to the UniFi console, like babysitters or grandparents.
 
@@ -23,25 +23,29 @@ Although it's technically feasible to set up a Shortcut that communicates direct
 2. Update the `docker-compose.yml` file with your UniFi DreamMachine login credentials and network details:
 
     ```yaml
-    version: "3.9"
+    version: '3'
     services:
-      unifi_api:
-        image: your_image
+      unifi_dreammachine_sinatra_api:
+        image: konung/unifi_dreammachine_sinatra_api:latest
+        ports:
+          - "4657:4567"
         environment:
           USERNAME: 'your_username'
           PASSWORD: 'your_password'
+          # Site name is usually - default
           SITE_NAME: 'default'
           BASE_URL: 'https://ip_address_of_your_dreammachine:443'
+          # This will need to be submitted and sent as part of your api reguest from external apps/shortcuts,etc
           API_TOKEN: SOME_VERY_LONG_AND_SECURE_TOKEN
     ```
 
-3. Build and run the Docker container:
+3. Build and run the Docker container or if you are using portainer - you can just start a stack :
 
     ```bash
     docker-compose up -d
     ```
 
-    The Sinatra application is now ready to accept requests. 
+    The Sinatra application is now ready to accept requests.
 
 ## Usage
 
@@ -56,10 +60,10 @@ The Sinatra app serves as a proxy to your UniFi DreamMachine, so you can make th
 This application requires **local** UniFi credentials to operate, and allowing only predefined actions to be performed. However, remember to always follow best practices when exposing any application on the internet. Consider using HTTPS and restricting access to known IP addresses whenever possible.
 
 # Customizing
-- See `unifi_api.rb` for a sample of various actions. Feel free to add more. 
+- See `unifi_api.rb` for a sample of various actions. Feel free to add more.
 - See [https://ubntwiki.com/products/software/unifi-controller/api](https://ubntwiki.com/products/software/unifi-controller/api) for reference of available endpoints
 - See `app.rb` - for Sinatra app that exposes `unifi_api.rb`
-- [UniFi-API-client](https://github.com/Art-of-WiFi/UniFi-API-client/) and [UniFI-API-browser](https://github.com/Art-of-WiFi/UniFi-API-browser) are also excellent references. 
+- [UniFi-API-client](https://github.com/Art-of-WiFi/UniFi-API-client/) and [UniFI-API-browser](https://github.com/Art-of-WiFi/UniFi-API-browser) are also excellent references.
 
 # Aknowledgement
 

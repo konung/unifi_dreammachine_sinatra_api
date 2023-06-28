@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'faraday'
 require 'faraday_middleware'
 require 'faraday-cookie_jar'
@@ -8,15 +10,15 @@ USERNAME = ENV['USERNAME']
 PASSWORD = ENV['PASSWORD']
 SITE_NAME = ENV['SITE_NAME']
 BASE_URL = ENV['BASE_URL']
-BASE_LOGIN_URL = BASE_URL + '/api/auth/login'
-BASE_API_URL = BASE_URL + '/proxy/network/'
+BASE_LOGIN_URL = "#{BASE_URL}/api/auth/login".freeze
+BASE_API_URL = "#{BASE_URL}/proxy/network/".freeze
 
 class UniFiAPI
   class LoginError < StandardError; end
   class CSRFTokenError < StandardError; end
 
   def initialize(username, password)
-    @logger = Logger.new(STDOUT)
+    @logger = Logger.new($stdout)
     @logger.info('Initializing UniFiAPI')
 
     # Initialize Faraday connection
@@ -53,7 +55,7 @@ class UniFiAPI
 
   def list_sites
     @logger.info('Listing site information')
-    response = @conn.get(BASE_API_URL + 'api/s/default/self', nil, { 'Cookie' => @cookies })
+    response = @conn.get("#{BASE_API_URL}api/s/default/self", nil, { 'Cookie' => @cookies })
     if response.status == 200
       @logger.info('Site information fetched successfully')
     #   puts JSON.pretty_generate(response.body)
@@ -108,7 +110,9 @@ class UniFiAPI
 
       # Check the response
       if put_response.status == 200
-        @logger.info("Traffic rule #{rule_id} (#{rule['description']}) successfully toggled. It's now: #{status} ")
+        message = "Traffic rule #{rule_id} (#{rule['description']}) successfully toggled. It's now: #{status} "
+        @logger.info(message)
+        message
       else
         @logger.error("Failed to toggle traffic rule. Response: #{put_response.status} - #{put_response.body}")
       end
@@ -129,12 +133,14 @@ class UniFiAPI
 
     # Check the response
     if response.status == 200
-      response.body.each do |rule|
+      response.body.map do |rule|
         rule_id = rule['_id']
         rule_desc = rule['description']
         enabled = rule['enabled']
         status = enabled ? 'enabled' : 'disabled'
-        @logger.info("Traffic rule #{rule_id} / #{rule_desc} is currently #{status}")
+        result = "Traffic rule #{rule_id} / #{rule_desc} is currently #{status}"
+        @logger.info(result)
+        "Traffic rule #{rule_id} / #{rule_desc} is currently #{status}"
       end
     else
       @logger.error("Failed to fetch traffic rules status. Response: #{response.status} - #{response.body}")
