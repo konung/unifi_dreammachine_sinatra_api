@@ -47,6 +47,17 @@ Although it's technically feasible to set up a Shortcut that communicates direct
 
     The Sinatra application is now ready to accept requests.
 
+## How to access Sinatra app Docker image
+
+Depending on settings in your Docker setup it should now be running on port 4657. i.e http://my-docker-host:4657
+Example config: Synology/QNAP/TrueNas NAS, running docker containers - this makes it avaible on the local network.
+
+To make it accessable from outside (DO THIS ONLY AT YOUR OWN RISK!), you can try several approaches:
+
+1. Setting up TailScale / WireGuard to run it on a mash network - if you set it up on your phone - you can access your docker container from anywhere ( probably a better approach )
+2. Setting up some kind of dyndns service like afraid.org with portforwarding. ( less secure )
+3. Running docker container on a VPS outside of your network, with VPS having a VPN site-to-site link back to your Dream Machine ( while this is possible, this is not recommended as it's difficult to secure )
+
 ## Usage
 
 This application provides several endpoints for managing UniFi traffic rules:
@@ -54,6 +65,12 @@ This application provides several endpoints for managing UniFi traffic rules:
 - `/status?api_token=SOME_VERY_LONG_AND_SECURE_TOKEN`: Fetches the current status of all traffic rules for the specified site.
 
 The Sinatra app serves as a proxy to your UniFi DreamMachine, so you can make these requests from anywhere, not just your local network. You can even integrate these endpoints into other systems, like MacOS & iOS shortcuts in Shortcut.app, to control traffic rules with the click of a button.
+
+
+Final url example:
+`https://my.tailscale.wiregurard.someothervpn.setup.net:4657/status?api_token=SOME_VERY_LONG_AND_SECURE_TOKEN`
+
+Now that you have this link + endpoint, it's fairly easy to setup a script or cli command that just hits that URL. Setting up a shortcut in Shortcuts.app is also straightforward.
 
 ## Security
 
